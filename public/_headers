@@ -1,0 +1,8 @@
+# Workers Static Assets の応答 (index.html・JS・CSS) に付けるヘッダー。Worker が返す応答 (/api/*, /auth/*) には効かないので、
+# 同じ方針を src/worker/securityHeaders.ts でも付けている。変更するときは両方を揃えること。
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: https://*.googleusercontent.com; connect-src 'self' https://api.anthropic.com https://api.openai.com https://generativelanguage.googleapis.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: DENY
+  X-Robots-Tag: noindex, nofollow

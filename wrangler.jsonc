@@ -1,0 +1,58 @@
+{
+	"$schema": "./node_modules/wrangler/config-schema.json",
+	"name": "schedule",
+	"main": "./src/worker/index.ts",
+	"compatibility_date": "2026-11-10",
+	"upload_source_maps": true,
+	// 静的ファイル (Vite の client ビルド) は @cloudflare/vite-plugin が assets.directory を自動で埋める。
+	// /api/* と /auth/* は常に Worker を先に実行し、それ以外は静的ファイル -> SPA フォールバック(index.html)。
+	"assets": {
+		"binding": "ASSETS",
+		"not_found_handling": "single-page-application",
+		"run_worker_first": [
+			"/api/*",
+			"/auth/*"
+		]
+	},
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "schedule",
+			// 本番の D1 (`wrangler d1 create schedule` で作成)。ローカル (--local) ではこの値は使われない。
+			"database_id": "83f7e271-74f4-4079-9623-5bbad2105175",
+			"migrations_dir": "migrations"
+		}
+	],
+	"durable_objects": {
+		"bindings": [
+			{
+				"name": "SCHEDULE_ROOM",
+				"class_name": "ScheduleRoom"
+			}
+		]
+	},
+	// SQLite バックエンドの Durable Object (無料プランで使えるのはこちらだけ)。クラスを足す・改名するときは tag を増やして追記する。
+	"migrations": [
+		{
+			"tag": "v1",
+			"new_sqlite_classes": [
+				"ScheduleRoom"
+			]
+		}
+	],
+	// Workers Logs (ダッシュボードで直近のログを検索できる)。無料プランは 1 日 20 万イベント・保持 3 日 (この料金体系は 2026-12-01 から変わると公式ページに記載あり。要確認)。不要なら false。
+	"observability": {
+		"enabled": true
+	},
+	"vars": {
+		// デプロイ前に書き換える。空のままだとドメインでは誰も入れない (管理者と例外アドレスだけ入れる)。
+		//   ALLOWED_DOMAINS: ログインを許可するメールのドメイン (カンマ区切り。例: "example.com,example.org")
+		//   ADMIN_EMAILS:    管理者のメールアドレス (カンマ区切り)。管理画面を使え、ドメイン外でもログインできる
+		// ローカルは .dev.vars で上書きする (.dev.vars.example 参照)。
+		"ALLOWED_DOMAINS": "example.com",
+		"ADMIN_EMAILS": "dev@example.com"
+	}
+	// シークレット (wrangler secret put): GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
+	// DEV_LOGIN_EMAIL はここに書かない。ローカルの .dev.vars のみ。
+	// Durable Object のクラス (ScheduleRoom) は src/worker/index.ts から export する。
+}

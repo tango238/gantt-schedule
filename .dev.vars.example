@@ -1,0 +1,9 @@
+# cp .dev.vars.example .dev.vars (.dev.vars は git 管理外)
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+# wrangler.jsonc の vars (本番は空) をローカルで上書きする
+ALLOWED_DOMAINS=example.com
+ADMIN_EMAILS=dev@example.com
+# 開発用ログイン (カンマ区切りで複数可。/auth/dev-login?as=<email> で選択、省略時は先頭): localhost 系ホストのときだけ有効。
+# 本番 (wrangler.jsonc の vars や wrangler secret) には絶対に設定しない。ここ (.dev.vars) だけに書く。
+DEV_LOGIN_EMAIL=dev@example.com,dev2@example.com

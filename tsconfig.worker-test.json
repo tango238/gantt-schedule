@@ -1,0 +1,9 @@
+{
+  // Worker のテストのうち、Workers の型 (D1Database など、env.ts 経由) と node:sqlite の両方が要るもの用。
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "lib": ["ES2022"],
+    "types": ["node"]
+  },
+  "include": ["worker-runtime.d.ts", "src/worker/admin/admin.test.ts", "src/worker/comments/comments.test.ts", "src/worker/schedules/favorites.test.ts"]
+}

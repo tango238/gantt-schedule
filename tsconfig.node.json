@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "lib": ["ES2022"],
+    "types": ["node"]
+  },
+  "include": ["vite.config.ts", "vitest.config.ts", "scripts", "src/shared/**/__tests__", "src/shared/**/*.test.ts", "src/worker/**/*.test.ts"],
+  // admin.test.ts / comments.test.ts / favorites.test.ts は Workers の型 (env.ts の D1Database など) が要るので tsconfig.worker-test.json で検査する。
+  "exclude": ["src/worker/admin/admin.test.ts", "src/worker/comments/comments.test.ts", "src/worker/schedules/favorites.test.ts"]
+}
